@@ -13,7 +13,7 @@ const Demo = () => {
   });
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
-  const [copied, setCopied] = useState(-1);
+  const [copied, setCopied] = useState<number>(-1);
 
   useEffect(() => {
     const articlesFromLocalStorage: Article[] = JSON.parse(
@@ -24,7 +24,7 @@ const Demo = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { data } = await getSummary({ articleUrl: article.url });
 
@@ -37,7 +37,7 @@ const Demo = () => {
     }
   };
 
-  const handleCopy = (copyUrl: string, index) => {
+  const handleCopy = (copyUrl: string, index: number) => {
     setCopied(index);
     navigator.clipboard.writeText(copyUrl);
     setTimeout(() => setCopied(-1), 3000);
@@ -103,7 +103,10 @@ const Demo = () => {
           <p className="font-inter font-bold text-black text-center">
             Well, that wasnt supposed to happen... <br />
             <span className="font-satoshi font-normal text-gray-700">
-              {error?.data?.error}
+              {
+                // @ts-ignore
+                error?.data?.message
+              }
             </span>
           </p>
         ) : (
